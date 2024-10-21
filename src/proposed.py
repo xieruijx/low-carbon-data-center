@@ -5,7 +5,7 @@ from utils.settings import Settings
 from utils.optimization import Optimization
 from utils.simulation import Simulation
 
-param, data = Settings().benchmark(Num_T=1000)
+param, data = Settings().benchmark(Num_T=1000, times=8.0)
 sol = Optimization().opt_param(param, theta_E=25)
 traj = Simulation.simulate(param, sol, data)
 
