@@ -48,9 +48,8 @@ plt.xlabel('Time')
 plt.ylabel('q_E')
 
 plt.figure(figsize=(8, 6))
-plt.plot(range(data['Num_T']), data['A_F'][0, :])
-plt.plot(range(data['Num_T']), traj['a'][0, :])
+plt.plot(range(data['Num_T'] + 1), traj['sum_cost'])
 plt.xlabel('Time')
-plt.ylabel('A_F, a')
+plt.ylabel('cost')
 
 plt.show()

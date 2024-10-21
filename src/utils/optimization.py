@@ -114,11 +114,37 @@ class Optimization(object):
             model.addConstr(p_B[:, t] >= 0)
             model.addConstr(p_B[:, t] <= param['P_Bo'])
             # 1f
-            model.addConstr(q_F[:, t] >= 0)
-            model.addConstr(q_F[:, t] <= param['Q_Fo'])
+            model.addConstr(q_F[:, t + 1] >= 0)
+            model.addConstr(q_F[:, t + 1] <= param['Q_Fo'])
             # 1g
-            model.addConstr(q_B[:, t] >= 0)
-            model.addConstr(q_B[:, t] <= param['Q_Bo'])
+            model.addConstr(q_B[:, t + 1] >= 0)
+            model.addConstr(q_B[:, t + 1] <= param['Q_Bo'])
+            # 3a
+            model.addConstr(e_S[:, t + 1] == e_S[:, t] + p_SC[:, t] * param['eta_SC'] - p_SD[:, t] / param['eta_SD'])
+            # 3b
+            model.addConstr(p_SC[:, t] >= 0)
+            model.addConstr(p_SC[:, t] <= param['P_SCo'])
+            # 3c
+            model.addConstr(p_SD[:, t] >= 0)
+            model.addConstr(p_SD[:, t] <= param['P_SDo'])
+            # 3d
+            model.addConstr(e_S[:, t + 1] >= param['E_Su'])
+            model.addConstr(e_S[:, t + 1] <= param['E_So'])
+            # 5a
+            model.addConstr(tau_H[:, t + 1] == tau_H[:, t] + param['alpha_B'] * p_B[:, t] - param['alpha_C'] * p_C[:, t] - data['beta_C'][:, t])
+            # 5b
+            model.addConstr(p_C[:, t] >= 0)
+            model.addConstr(p_C[:, t] <= param['P_Co'])
+            # 5c
+            model.addConstr(tau_H[:, t + 1] >= param['T_Hu'])
+            model.addConstr(tau_H[:, t + 1] <= param['T_Ho'])
+        # 8
+        model.addConstr(sum(sum(data['gamma_E'] * (p_B + p_SC - p_SD + p_C))) <= param['C_Eo'] * data['Num_T'])
+        # Finalization
+        model.addConstr(q_F[:, data['Num_T']] == 0)
+        model.addConstr(q_B[:, data['Num_T']] == 0)
+        model.addConstr(e_S[:, data['Num_T']] == param['E_Su'])
+        model.addConstr(tau_H[:, data['Num_T']] == param['T_Hu'])
         
         # model.setParam('OutputFlag', 0)
         model.optimize()
@@ -134,6 +160,14 @@ class Optimization(object):
         traj['e_S'] = e_S.X
         traj['p_C'] = p_C.X
         traj['tau_H'] = tau_H.X
+
+        traj['q_E'] = np.zeros(data['Num_T'] + 1)
+        traj['sum_E'] = np.zeros(data['Num_T'] + 1)
+        traj['sum_cost'] = np.zeros(data['Num_T'] + 1)
+        for t in range(data['Num_T']):
+            traj['q_E'][t + 1] = np.maximum(traj['q_E'][t] + data['gamma_E'][:, t] @ (traj['p_B'][:, t] + traj['p_SC'][:, t] - traj['p_SD'][:, t] + traj['p_C'][:, t]) - param['C_Eo'], 0)
+            traj['sum_E'][t + 1] = traj['sum_E'][t] + data['gamma_E'][:, t] @ (traj['p_B'][:, t] + traj['p_SC'][:, t] - traj['p_SD'][:, t] + traj['p_C'][:, t])
+            traj['sum_cost'][t + 1] = traj['sum_cost'][t] + sum(sum(param['gamma_R'] * traj['m_R'][:, :, t])) + param['gamma_F'] @ (data['A_F'][:, t] - traj['a_F'][:, t]) + param['gamma_S'] @ (traj['p_SC'][:, t] + traj['p_SD'][:, t]) + data['gamma_P'][:, t] @ (traj['p_B'][:, t] + traj['p_SC'][:, t] - traj['p_SD'][:, t] + traj['p_C'][:, t])
 
         return traj
  
