@@ -41,16 +41,14 @@ class Settings(object):
         param['P_SDo'] = np.ones((param['Num_B'],)) * 5
         param['E_Su'] = np.zeros((param['Num_B'],)) * 0
         param['E_So'] = np.ones((param['Num_B'],)) * 50
-        param['gamma_S'] = np.ones((param['Num_B'],)) * 1
+        param['gamma_S'] = np.ones((param['Num_B'],)) * 0
         ## Cooling facility
-        param['alpha_B'] = np.ones((param['Num_B'],)) * 0.1
-        param['alpha_H'] = np.ones((param['Num_B'],)) * 5
-        param['alpha_C'] = np.ones((param['Num_B'],)) * 5
+        param['alpha_B'] = np.ones((param['Num_B'],)) * 1
+        param['alpha_C'] = np.ones((param['Num_B'],)) * 4
         param['beta_Co'] = np.ones((param['Num_B'],)) * 0.1
-        param['P_Ho'] = np.ones((param['Num_B'],)) * 1
-        param['P_Co'] = np.ones((param['Num_B'],)) * 1
-        param['T_Hu'] = np.ones((param['Num_B'],)) * 20
-        param['T_Ho'] = np.ones((param['Num_B'],)) * 60
+        param['P_Co'] = np.ones((param['Num_B'],)) * 0.5
+        param['T_Hu'] = np.ones((param['Num_B'],)) * 30
+        param['T_Ho'] = np.ones((param['Num_B'],)) * 50
         data['beta_C'] = np.random.rand(param['Num_B'], data['Num_T']) * (param['beta_Co'].reshape((-1, 1)) @ np.ones((1, data['Num_T'])))
         ## Electricity cost
         param['gamma_Pu'] = np.ones((param['Num_B'],)) * 5
@@ -60,7 +58,7 @@ class Settings(object):
         param['gamma_Eu'] = np.ones((param['Num_B'],)) * 0
         param['gamma_Eo'] = np.ones((param['Num_B'],)) * 1
         data['gamma_E'] = np.random.rand(param['Num_B'], data['Num_T']) * ((param['gamma_Eo'].reshape((-1, 1)) - param['gamma_Eu'].reshape((-1, 1))) @ np.ones((1, data['Num_T']))) + param['gamma_Eu'].reshape((-1, 1)) @ np.ones((1, data['Num_T']))
-        param['C_Eo'] = 1.8
+        param['C_Eo'] = 1.2
 
         return param, data
     
