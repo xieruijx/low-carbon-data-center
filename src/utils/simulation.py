@@ -65,7 +65,7 @@ class Simulation(object):
             tq_S = traj['e_S'][:, t] + sol['theta_S']
             tq_E = traj['q_E'][t]
             I = tq_F @ (a - m @ np.ones((param['Num_B'],))) + tq_B @ (m.T @ np.ones((param['Num_F'],)) - p_B) + tq_S @ (p_SC * param['eta_SC'] - p_SD / param['eta_SD']) + tq_E * (data['gamma_E'][:, t] @ (p_B + p_SC - p_SD) - param['C_Eo'])
-            J = sum(sum(param['gamma_R'] * m)) + param['gamma_F'] @ (data['A_F'][:, t] - a) + param['gamma_S'] @ (p_SC + p_SD) + data['gamma_P'][:, t] @ (p_B + p_SC - p_SD)
+            J = sum(sum(param['gamma_R'] * m)) + param['gamma_F'] @ (data['A_F'][:, t] - a) + param['gamma_QF'] @ (a - m @ np.ones((param['Num_B'],))) + param['gamma_QB'] @ (m.T @ np.ones((param['Num_F'],)) - p_B) + param['gamma_S'] @ (p_SC + p_SD) + data['gamma_P'][:, t] @ (p_B + p_SC - p_SD)
             model.setObjective(I + sol['V'] * J, GRB.MINIMIZE)
 
             # Optimize
@@ -76,7 +76,7 @@ class Simulation(object):
             traj['q_F'][:, t + 1] = traj['q_F'][:, t] + a.X - m.X @ np.ones((param['Num_B'],))
             traj['q_B'][:, t + 1] = traj['q_B'][:, t] + m.X.T @ np.ones((param['Num_F'],)) - p_B.X
             traj['e_S'][:, t + 1] = traj['e_S'][:, t] + p_SC.X * param['eta_SC'] - p_SD.X / param['eta_SD']
-            traj['q_E'][t + 1] = np.maximum(traj['q_E'][t] + data['gamma_E'][:, t] @ (p_B.X + p_SC.X - p_SD.X), 0)
+            traj['q_E'][t + 1] = np.maximum(traj['q_E'][t] + data['gamma_E'][:, t] @ (p_B.X + p_SC.X - p_SD.X - param['C_Eo']), 0)
 
             traj['a'][:, t] = a.X
             traj['m'][:, :, t] = m.X
