@@ -6,7 +6,7 @@ from utils.optimization import Optimization
 from utils.simulation import Simulation
 
 param, data = Settings().benchmark(Num_T=1000)
-sol = Optimization().opt_param(param, theta_E=21)
+sol = Optimization().opt_param(param, theta_E=18)
 traj = Simulation.simulate(param, sol, data)
 
 plt.figure(figsize=(8, 6))
