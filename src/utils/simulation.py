@@ -76,7 +76,7 @@ class Simulation(object):
             traj['q_F'][:, t + 1] = traj['q_F'][:, t] + a.X - m.X @ np.ones((param['Num_B'],))
             traj['q_B'][:, t + 1] = traj['q_B'][:, t] + m.X.T @ np.ones((param['Num_F'],)) - p_B.X
             traj['e_S'][:, t + 1] = traj['e_S'][:, t] + p_SC.X * param['eta_SC'] - p_SD.X / param['eta_SD']
-            traj['q_E'][t + 1] = np.maximum(traj['q_E'][t] + data['gamma_E'][:, t] @ (p_B.X + p_SC.X - p_SD.X - param['C_Eo']), 0)
+            traj['q_E'][t + 1] = np.maximum(traj['q_E'][t] + data['gamma_E'][:, t] @ (p_B.X + p_SC.X - p_SD.X) - param['C_Eo'], 0)
 
             traj['a'][:, t] = a.X
             traj['m'][:, :, t] = m.X
