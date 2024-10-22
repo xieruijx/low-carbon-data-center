@@ -22,10 +22,10 @@ class Simulation(object):
         traj['p_SC'] = np.zeros((param['Num_B'], data['Num_T']))
         traj['p_SD'] = np.zeros((param['Num_B'], data['Num_T']))
         traj['e_S'] = np.zeros((param['Num_B'], data['Num_T'] + 1))
-        traj['e_S'][:, 0] = param['E_Su']
+        traj['e_S'][:, 0] = (param['E_Su'] + param['E_So']) / 2
         traj['p_C'] = np.zeros((param['Num_B'], data['Num_T']))
         traj['tau_H'] = np.zeros((param['Num_B'], data['Num_T'] + 1))
-        traj['tau_H'][:, 0] = param['T_Hu']
+        traj['tau_H'][:, 0] = (param['T_Hu'] + param['T_Ho']) / 2
         traj['q_E'] = np.zeros(data['Num_T'] + 1)
         traj['sum_E'] = np.zeros(data['Num_T'] + 1)
         traj['sum_cost'] = np.zeros(data['Num_T'] + 1)
@@ -36,10 +36,10 @@ class Simulation(object):
             # Variables
             a_F = model.addMVar((param['Num_F'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
             m_R = model.addMVar((param['Num_F'], param['Num_B']), lb=-float('inf'), vtype=GRB.CONTINUOUS)
-            p_B = model.addMVar(( param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
-            p_SC = model.addMVar(( param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
-            p_SD = model.addMVar(( param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
-            p_C = model.addMVar(( param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
+            p_B = model.addMVar((param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
+            p_SC = model.addMVar((param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
+            p_SD = model.addMVar((param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
+            p_C = model.addMVar((param['Num_B'],), lb=-float('inf'), vtype=GRB.CONTINUOUS)
 
             # Constraint
             # 1c

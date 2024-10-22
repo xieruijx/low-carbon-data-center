@@ -8,7 +8,7 @@ class Settings(object):
     """
     
     @staticmethod
-    def benchmark(random_seed:int=42, Num_T:int=10000, times=1.0):
+    def benchmark(random_seed:int=42, Num_T:int=10000):
         """
         Benchmark case settings
         """
@@ -23,14 +23,14 @@ class Settings(object):
         ## Front end
         param['Num_F'] = 2 #
         param['A_Fo'] = np.ones((param['Num_F'],)) * 4
-        param['Q_Fo'] = np.ones((param['Num_F'],)) * 50 * times
+        param['Q_Fo'] = np.ones((param['Num_F'],)) * 80
         param['gamma_F'] = np.ones((param['Num_F'],)) * 100
         param['gamma_QF'] = np.ones((param['Num_F'],)) * 0
         data['A_F'] = np.random.rand(param['Num_F'], data['Num_T']) * (param['A_Fo'].reshape((-1, 1)) @ np.ones((1, data['Num_T'])))
         ## Back end
         param['Num_B'] = 3 #
         param['M_Ro'] = np.ones((param['Num_F'], param['Num_B'])) * 15
-        param['Q_Bo'] = np.ones((param['Num_B'],)) * 40 * times
+        param['Q_Bo'] = np.ones((param['Num_B'],)) * 55
         param['P_Bo'] = np.ones((param['Num_B'],)) * 2
         param['gamma_R'] = np.ones((param['Num_F'], param['Num_B'])) * 1
         param['gamma_QB'] = np.ones((param['Num_B'],)) * 0
@@ -40,15 +40,15 @@ class Settings(object):
         param['P_SCo'] = np.ones((param['Num_B'],)) * 5
         param['P_SDo'] = np.ones((param['Num_B'],)) * 5
         param['E_Su'] = np.zeros((param['Num_B'],)) * 0
-        param['E_So'] = np.ones((param['Num_B'],)) * 35 * times
+        param['E_So'] = np.ones((param['Num_B'],)) * 50
         param['gamma_S'] = np.ones((param['Num_B'],)) * 0
         ## Cooling facility
         param['alpha_B'] = np.ones((param['Num_B'],)) * 1
         param['alpha_C'] = np.ones((param['Num_B'],)) * 4
         param['beta_Co'] = np.ones((param['Num_B'],)) * 0.1
         param['P_Co'] = np.ones((param['Num_B'],)) * 0.5
-        param['T_Hu'] = np.ones((param['Num_B'],)) * 20 * times
-        param['T_Ho'] = np.ones((param['Num_B'],)) * 30 * times
+        param['T_Hu'] = np.ones((param['Num_B'],)) * 30
+        param['T_Ho'] = np.ones((param['Num_B'],)) * 50
         data['beta_C'] = np.random.rand(param['Num_B'], data['Num_T']) * (param['beta_Co'].reshape((-1, 1)) @ np.ones((1, data['Num_T'])))
         ## Electricity cost
         param['gamma_Pu'] = np.ones((param['Num_B'],)) * 5

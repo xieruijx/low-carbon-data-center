@@ -31,17 +31,17 @@ class Optimization(object):
         for i in range(param['Num_F']):
             for j in range(param['Num_B']):
                 model.addConstr(- theta_F[i] - sum_m_j[i] + theta_B[j] + V * param['gamma_R'][i, j] >= 0)
-        # b
-        for i in range(param['Num_F']):
-            model.addConstr(theta_F[i] + param['Q_Fo'][i] - param['A_Fo'][i] - V * param['gamma_F'][i] >= 0)
+        # # b
+        # for i in range(param['Num_F']):
+        #     model.addConstr(theta_F[i] + param['Q_Fo'][i] - param['A_Fo'][i] - V * param['gamma_F'][i] >= 0)
         # c
         for j in range(param['Num_B']):
             model.addConstr(- theta_B[j] - param['P_Bo'][j] + (param['T_Hu'][j] + theta_H[j]) * param['alpha_B'][j] + V * param['gamma_Pu'][j] >= 0)
-        # d
-        sum_m_i = np.sum(param['M_Ro'], axis=0)
-        for i in range(param['Num_F']):
-            for j in range(param['Num_B']):
-                model.addConstr(- param['Q_Fo'][i] - theta_F[i] + theta_B[j] + param['Q_Bo'] - sum_m_i[j] + V * param['gamma_R'][i][j] >= 0)
+        # # d
+        # sum_m_i = np.sum(param['M_Ro'], axis=0)
+        # for i in range(param['Num_F']):
+        #     for j in range(param['Num_B']):
+        #         model.addConstr(- param['Q_Fo'][i] - theta_F[i] + theta_B[j] + param['Q_Bo'] - sum_m_i[j] + V * param['gamma_R'][i][j] >= 0)
         # e
         for j in range(param['Num_B']):
             model.addConstr(- (theta_S[j] + param['E_Su'][j] + param['P_SDo'][j] / param['eta_SD'][j]) / param['eta_SD'][j] - theta_E * param['gamma_Eo'][j] + V * param['gamma_S'][j] - V * param['gamma_Po'][j] >= 0)
@@ -96,8 +96,8 @@ class Optimization(object):
         # Initialization
         model.addConstr(q_F[:, 0] == 0)
         model.addConstr(q_B[:, 0] == 0)
-        model.addConstr(e_S[:, 0] == param['E_Su'])
-        model.addConstr(tau_H[:, 0] == param['T_Hu'])
+        model.addConstr(e_S[:, 0] == (param['E_Su'] + param['E_So']) / 2)
+        model.addConstr(tau_H[:, 0] == (param['T_Hu'] + param['T_Ho']) / 2)
         for t in range(data['Num_T']):
             # 1a
             model.addConstr(q_F[:, t + 1] == q_F[:, t] + a_F[:, t] - m_R[:, :, t] @ np.ones((param['Num_B'],)))
@@ -115,10 +115,10 @@ class Optimization(object):
             model.addConstr(p_B[:, t] <= param['P_Bo'])
             # 1f
             model.addConstr(q_F[:, t + 1] >= 0)
-            model.addConstr(q_F[:, t + 1] <= param['Q_Fo'])
+            # model.addConstr(q_F[:, t + 1] <= param['Q_Fo'])
             # 1g
             model.addConstr(q_B[:, t + 1] >= 0)
-            model.addConstr(q_B[:, t + 1] <= param['Q_Bo'])
+            # model.addConstr(q_B[:, t + 1] <= param['Q_Bo'])
             # 3a
             model.addConstr(e_S[:, t + 1] == e_S[:, t] + p_SC[:, t] * param['eta_SC'] - p_SD[:, t] / param['eta_SD'])
             # 3b
@@ -143,8 +143,8 @@ class Optimization(object):
         # Finalization
         model.addConstr(q_F[:, data['Num_T']] == 0)
         model.addConstr(q_B[:, data['Num_T']] == 0)
-        model.addConstr(e_S[:, data['Num_T']] == param['E_Su'])
-        model.addConstr(tau_H[:, data['Num_T']] == param['T_Hu'])
+        model.addConstr(e_S[:, data['Num_T']] == (param['E_Su'] + param['E_So']) / 2)
+        model.addConstr(tau_H[:, data['Num_T']] == (param['T_Hu'] + param['T_Ho']) / 2)
         
         # model.setParam('OutputFlag', 0)
         model.optimize()
