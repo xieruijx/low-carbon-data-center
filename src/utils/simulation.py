@@ -9,7 +9,7 @@ class Simulation(object):
     """
 
     @staticmethod
-    def simulate(param, sol, data):
+    def simulate(param, sol, data, b_emission=True):
         """
         Simulate the real-time operation
         """
@@ -74,7 +74,10 @@ class Simulation(object):
             tq_S = traj['e_S'][:, t] + sol['theta_S']
             tq_H = traj['tau_H'][:, t] + sol['theta_H']
             tq_E = traj['q_E'][t]
-            I = tq_F @ (a_F - m_R @ np.ones((param['Num_B'],))) + tq_B @ (m_R.T @ np.ones((param['Num_F'],)) - p_B) + tq_S @ (p_SC * param['eta_SC'] - p_SD / param['eta_SD']) + tq_H @ (param['alpha_B'] * p_B - param['alpha_C'] * p_C - data['beta_C'][:, t]) + tq_E * (data['gamma_E'][:, t] @ (p_B + p_SC - p_SD + p_C) - param['C_Eo'])
+            if b_emission:
+                I = tq_F @ (a_F - m_R @ np.ones((param['Num_B'],))) + tq_B @ (m_R.T @ np.ones((param['Num_F'],)) - p_B) + tq_S @ (p_SC * param['eta_SC'] - p_SD / param['eta_SD']) + tq_H @ (param['alpha_B'] * p_B - param['alpha_C'] * p_C - data['beta_C'][:, t]) + tq_E * (data['gamma_E'][:, t] @ (p_B + p_SC - p_SD + p_C) - param['C_Eo'])
+            else:
+                I = tq_F @ (a_F - m_R @ np.ones((param['Num_B'],))) + tq_B @ (m_R.T @ np.ones((param['Num_F'],)) - p_B) + tq_S @ (p_SC * param['eta_SC'] - p_SD / param['eta_SD']) + tq_H @ (param['alpha_B'] * p_B - param['alpha_C'] * p_C - data['beta_C'][:, t])
             J = sum(sum(param['gamma_R'] * m_R)) + param['gamma_F'] @ (data['A_F'][:, t] - a_F) + param['gamma_QF'] @ (a_F - m_R @ np.ones((param['Num_B'],))) + param['gamma_QB'] @ (m_R.T @ np.ones((param['Num_F'],)) - p_B) + param['gamma_S'] @ (p_SC + p_SD) + data['gamma_P'][:, t] @ (p_B + p_SC - p_SD + p_C)
             model.setObjective(I + sol['V'] * J, GRB.MINIMIZE)
 
@@ -101,5 +104,3 @@ class Simulation(object):
         print(max(traj['q_E']))
             
         return traj
-
- 
