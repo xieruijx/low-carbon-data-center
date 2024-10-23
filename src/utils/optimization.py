@@ -55,7 +55,7 @@ class Optimization(object):
         for j in range(param['Num_B']):
             model.addConstr(- (theta_H[j] + param['T_Ho'][j] - param['alpha_B'][j] * param['P_Bo'][j]) * param['alpha_C'][j] + theta_E * param['gamma_Eo'][j] + V * param['gamma_Po'][j] <= 0)
         
-        # model.setParam('OutputFlag', 0)
+        model.setParam('OutputFlag', 0)
         model.optimize()
 
         sol = {}
@@ -106,7 +106,7 @@ class Optimization(object):
         for j in range(param['Num_B']):
             model.addConstr(- (theta_H[j] + param['T_Ho'][j] - param['alpha_B'][j] * param['P_Bo'][j]) * param['alpha_C'][j] + V * param['gamma_Po'][j] <= 0)
         
-        # model.setParam('OutputFlag', 0)
+        model.setParam('OutputFlag', 0)
         model.optimize()
 
         sol = {}

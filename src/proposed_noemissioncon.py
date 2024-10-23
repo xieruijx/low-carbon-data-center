@@ -8,6 +8,7 @@ from utils.simulation import Simulation
 param, data = Settings().benchmark(Num_T=1000)
 sol = Optimization().opt_param_noemissioncon(param)
 traj = Simulation.simulate(param, sol, data, b_emission=False)
+print('V: {}'.format(sol['V']))
 
 plt.figure(figsize=(8, 6))
 plt.plot(range(data['Num_T'] + 1), traj['q_F'][0, :])

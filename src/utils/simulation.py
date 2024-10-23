@@ -100,7 +100,5 @@ class Simulation(object):
             traj['p_C'][:, t] = p_C.X
             traj['sum_E'][t + 1] = traj['sum_E'][t] + data['gamma_E'][:, t] @ (p_B.X + p_SC.X - p_SD.X + p_C.X)
             traj['sum_cost'][t + 1] = traj['sum_cost'][t] + sum(sum(param['gamma_R'] * m_R.X)) + param['gamma_F'] @ (data['A_F'][:, t] - a_F.X) + param['gamma_S'] @ (p_SC.X + p_SD.X) + data['gamma_P'][:, t] @ (p_B.X + p_SC.X - p_SD.X + p_C.X)
-
-        print(max(traj['q_E']))
             
         return traj

@@ -5,9 +5,20 @@ from utils.settings import Settings
 from utils.optimization import Optimization
 from utils.simulation import Simulation
 
+Max_Iter = 10
+
 param, data = Settings().benchmark(Num_T=1000)
-sol = Optimization().opt_param(param, theta_E=25)
-traj = Simulation.simulate(param, sol, data)
+set_theta_E = np.zeros((Max_Iter,))
+for iter in range(Max_Iter):
+    sol = Optimization().opt_param(param, theta_E=set_theta_E[iter])
+    print('V: {}'.format(sol['V']))
+    traj = Simulation.simulate(param, sol, data)
+    print('Max q_E: {}'.format(max(traj['q_E'])))
+    if abs(max(traj['q_E'] - set_theta_E[iter])) < 1.0 or iter == Max_Iter - 1:
+        break
+    else:
+        set_theta_E[iter + 1] = max(traj['q_E'])
+print('Iter of q_E: {}'.format(set_theta_E))
 
 plt.figure(figsize=(8, 6))
 plt.plot(range(data['Num_T'] + 1), traj['q_F'][0, :])
