@@ -1,2 +1,3 @@
 src/utils/__pycache__
 *.log
+*.npy
