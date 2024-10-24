@@ -5,10 +5,13 @@ from utils.settings import Settings
 from utils.optimization import Optimization
 from utils.simulation import Simulation
 
-param, data = Settings().benchmark(Num_T=1000)
+param, data = Settings().benchmark(Num_T=9000)
 sol = Optimization().opt_param_noemissioncon(param)
 traj = Simulation.simulate(param, sol, data, b_emission=False)
 print('V: {}'.format(sol['V']))
+
+print('Test average cost rate: {} $/h'.format(traj['sum_cost'][-1] / 9000 * 10))
+print('Test average emission rate: {} tCO2/h'.format(traj['sum_E'][-1] / 9000))
 
 plt.figure(figsize=(8, 6))
 plt.plot(range(data['Num_T'] + 1), traj['q_F'][0, :])

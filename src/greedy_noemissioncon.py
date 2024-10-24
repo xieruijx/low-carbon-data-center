@@ -5,7 +5,7 @@ from utils.settings import Settings
 from utils.optimization import Optimization
 
 param, data = Settings().benchmark(Num_T=9000)
-traj = Optimization().opt_offline(param, data)
+traj = Optimization().opt_greedy(param, data, b_emission=False)
 
 print('Test average cost rate: {} $/h'.format(traj['sum_cost'][-1] / 9000 * 10))
 print('Test average emission rate: {} tCO2/h'.format(traj['sum_E'][-1] / 9000))

@@ -193,10 +193,10 @@ class Optimization(object):
         if b_emission:
             model.addConstr(sum(sum(data['gamma_E'] * (p_B + p_SC - p_SD + p_C))) <= param['C_Eo'] * data['Num_T'])
         # Finalization
-        model.addConstr(q_F[:, data['Num_T']] == 0)
-        model.addConstr(q_B[:, data['Num_T']] == 0)
-        model.addConstr(e_S[:, data['Num_T']] == (param['E_Su'] + param['E_So']) / 2)
-        model.addConstr(tau_H[:, data['Num_T']] == (param['T_Hu'] + param['T_Ho']) / 2)
+        # model.addConstr(q_F[:, data['Num_T']] == 0)
+        # model.addConstr(q_B[:, data['Num_T']] == 0)
+        # model.addConstr(e_S[:, data['Num_T']] == (param['E_Su'] + param['E_So']) / 2)
+        # model.addConstr(tau_H[:, data['Num_T']] == (param['T_Hu'] + param['T_Ho']) / 2)
         
         # model.setParam('OutputFlag', 0)
         model.optimize()
@@ -224,7 +224,7 @@ class Optimization(object):
         return traj
     
     @staticmethod
-    def opt_greedy(param, data):
+    def opt_greedy(param, data, b_emission=True):
         """
         Optimize using the greedy algorithm
         """
@@ -289,7 +289,8 @@ class Optimization(object):
             model.addConstr(traj['tau_H'][:, t] + param['alpha_B'] * p_B - param['alpha_C'] * p_C - data['beta_C'][:, t] >= param['T_Hu'])
             model.addConstr(traj['tau_H'][:, t] + param['alpha_B'] * p_B - param['alpha_C'] * p_C - data['beta_C'][:, t] <= param['T_Ho'])
             # 8
-            model.addConstr(traj['sum_E'][t] + data['gamma_E'][:, t] @ (p_B + p_SC - p_SD + p_C) <= param['C_Eo'] * (t + 1))
+            if b_emission:
+                model.addConstr(traj['sum_E'][t] + data['gamma_E'][:, t] @ (p_B + p_SC - p_SD + p_C) <= param['C_Eo'] * (t + 1))
 
             # Objective
             J = sum(sum(param['gamma_R'] * m_R)) + param['gamma_F'] @ (data['A_F'][:, t] - a_F) + param['gamma_QF'] @ (a_F - m_R @ np.ones((param['Num_B'],))) + param['gamma_QB'] @ (m_R.T @ np.ones((param['Num_F'],)) - p_B) + param['gamma_S'] @ (p_SC + p_SD) + data['gamma_P'][:, t] @ (p_B + p_SC - p_SD + p_C)
